@@ -22,7 +22,8 @@
             <div class="w-full bg-white/5 border-b border-white/10 p-8 text-center">
                 <div class="flex justify-center mb-4">
                     <div class="relative">
-                        <div class="w-20 h-20 rounded-full border-4 flex items-center justify-center bg-blue-600/20 border-blue-500 shadow-[0_0_40px_-5px_rgba(59,130,246,0.6)]">
+                
+                <div class="w-20 h-20 rounded-full border-4 flex items-center justify-center bg-blue-600/20 border-blue-500 shadow-[0_0_40px_-5px_rgba(59,130,246,0.6)]">
                             <i class="fas fa-user-plus text-3xl text-blue-400"></i>
                         </div>
                         <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center border-4 border-[#0f172a]">
