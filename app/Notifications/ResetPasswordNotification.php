@@ -24,11 +24,12 @@ class ResetPasswordNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        // Generamos la URL segura que Laravel espera para resetear la clave
-        $url = url(route('password.reset', [
+        $baseUrl = request()?->getSchemeAndHttpHost() ?: config('app.url');
+
+        $url = rtrim($baseUrl, '/') . route('password.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
-        ], false));
+        ], false);
 
         return (new MailMessage)
             ->subject('Recuperación de Contraseña - Observatorio Max Schreier')

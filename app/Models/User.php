@@ -5,13 +5,14 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification; // Importante para el Punto 3
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +25,9 @@ protected $fillable = [
     'email',
     'password',
     'role',
+    'is_blacklisted',
+    'blacklist_reason',
+    'blacklisted_at',
     'id_acceso',
     'departamento', // <--- Debe estar aquí
 ];
@@ -43,6 +47,8 @@ protected $fillable = [
     {
         return [
             'email_verified_at' => 'datetime',
+            'blacklisted_at' => 'datetime',
+            'is_blacklisted' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -65,6 +71,11 @@ protected $fillable = [
     public function reservas()
     {
         return $this->hasMany(Reserva::class);
+    }
+
+    public function visitFeedback()
+    {
+        return $this->hasMany(VisitFeedback::class);
     }
 
     // CHEQUEO DE ROLES

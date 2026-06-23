@@ -1,3 +1,59 @@
+@php
+    $aboutSections = $aboutSections ?? collect();
+
+    $defaults = [
+        'hero' => [
+            'title' => 'El Observatorio',
+            'subtitle' => 'Exploración e investigación científica UMSA',
+            'body' => 'Un espacio universitario dedicado a observar, estudiar y compartir el cielo desde La Paz.',
+            'image' => 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1600',
+        ],
+        'historia' => [
+            'title' => 'Antecedentes institucionales',
+            'subtitle' => 'Historia y legado',
+            'body' => 'Aquí se detallará la trayectoria del Observatorio Astronómico Max Schreier y su vínculo con la Universidad Mayor de San Andrés.',
+            'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600',
+        ],
+        'investigacion' => [
+            'title' => 'Líneas de investigación',
+            'subtitle' => 'Ciencia, monitoreo y formación',
+            'body' => 'Investigación aplicada en astrofísica, monitoreo solar, estudios atmosféricos y actividades académicas con docentes y estudiantes.',
+            'image' => 'https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=1600',
+        ],
+        'ubicacion' => [
+            'title' => 'Ubicación',
+            'subtitle' => 'Cota Cota, La Paz',
+            'body' => 'El observatorio se encuentra en la zona de Cota Cota, Calle 27, como parte del entorno académico de la UMSA.',
+            'image' => 'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=1600',
+        ],
+    ];
+
+    $section = function ($key) use ($aboutSections, $defaults) {
+        $item = $aboutSections->get($key);
+        $fallback = $defaults[$key];
+
+        return (object) [
+            'title' => $item?->title ?: $fallback['title'],
+            'subtitle' => $item?->subtitle ?: $fallback['subtitle'],
+            'body' => $item?->body ?: $fallback['body'],
+            'image' => $item?->image_path ? asset('storage/' . $item->image_path) : $fallback['image'],
+        ];
+    };
+
+    $hero = $section('hero');
+    $history = $section('historia');
+    $research = $section('investigacion');
+    $location = $section('ubicacion');
+
+    $navItems = [
+        'bienvenido' => ['label' => 'Inicio', 'route' => route('bienvenido')],
+        'investigacion' => ['label' => 'Investigación', 'route' => route('investigacion')],
+        'eventos' => ['label' => 'Eventos', 'route' => route('eventos')],
+        'galeria' => ['label' => 'Galería', 'route' => route('galeria')],
+        'contacto' => ['label' => 'Contacto', 'route' => route('contacto')],
+    ];
+@endphp
+
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
@@ -5,9 +61,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Acerca del Observatorio | Max Schreier</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Plus+Jakarta+Sans:wght@200;400;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -15,18 +69,9 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { 
-                        cinzel: ['Cinzel'], 
-                        sans: ['Plus Jakarta Sans'],
-                        syncopate: ['Syncopate']
-                    },
-                    colors: {
-                        cosmos: {
-                            950: '#02040a',
-                            900: '#050a15',
-                            primary: '#3b82f6',
-                            neon: '#22d3ee',
-                        }
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
                     }
                 }
             }
@@ -34,198 +79,121 @@
     </script>
 
     <style>
-        body { transition: background-color 0.8s ease, color 0.5s ease; }
-        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); }
-        .light .glass { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.05); }
-        
-        .text-gradient { 
-            background: linear-gradient(135deg, #fff 0%, #3b82f6 50%, #22d3ee 100%); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-        }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        /* Contenedor de imagen responsivo con placeholder */
-        .image-slot {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: rgba(255,255,255,0.05);
-            border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-        .image-slot img { width: 100%; height: 100%; object-fit: cover; }
+        body { transition: background-color .35s ease, color .35s ease; }
+        .glass { background: rgba(255,255,255,.76); border: 1px solid rgba(15,23,42,.10); backdrop-filter: blur(22px); }
+        .dark .glass { background: rgba(2,6,23,.70); border-color: rgba(255,255,255,.10); }
     </style>
 </head>
-<body class="bg-cosmos-950 text-white font-sans dark overflow-x-hidden">
 
-<div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
+<body class="bg-slate-50 text-slate-950 dark:bg-[#02040a] dark:text-white font-sans overflow-x-hidden">
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(14,165,233,.18),transparent_30%),radial-gradient(circle_at_85%_20%,rgba(245,158,11,.14),transparent_28%)] dark:bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,.16),transparent_30%),radial-gradient(circle_at_85%_20%,rgba(59,130,246,.18),transparent_30%)]"></div>
+    </div>
 
-<!-- BARRA DE NAVEGACIÓN CON BOTÓN "VOLVER" ARRIBA -->
-<header class="fixed top-0 w-full z-[100] p-4">
-    <nav class="max-w-7xl mx-auto flex gap-4 items-center">
-        
-        <!-- BOTÓN VOLVER (NUEVA UBICACIÓN) -->
-        <a href="{{ route('bienvenido') }}" class="glass h-12 px-6 rounded-full flex items-center gap-3 text-cosmos-neon hover:bg-cosmos-neon hover:text-cosmos-950 transition-all group">
-            <i class="fas fa-arrow-left text-xs"></i>
-            <span class="text-[10px] font-black uppercase tracking-widest hidden md:block">Inicio</span>
-        </a>
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-4">
+        <nav class="glass max-w-7xl mx-auto rounded-2xl px-4 md:px-6 py-3 flex items-center justify-between gap-4 shadow-xl">
+            <a href="{{ route('bienvenido') }}" class="min-w-0">
+                <span class="block font-cinzel font-black text-sm md:text-lg tracking-widest uppercase">Max Schreier</span>
+                <span class="block text-[8px] md:text-[9px] font-black uppercase tracking-[0.35em] text-cyan-500">Observatorio UMSA</span>
+            </a>
 
-        <div class="glass flex-grow rounded-full px-6 py-3 flex justify-between items-center">
-            <div class="flex flex-col">
-                <span class="font-syncopate font-black tracking-tighter text-xs md:text-sm uppercase">MAX <span class="text-cosmos-neon">SCHREIER</span></span>
-                <span class="text-[6px] md:text-[7px] uppercase tracking-[0.5em] text-cosmos-primary font-bold">UMSA Astrophysics</span>
+            <div class="hidden lg:flex items-center gap-7 text-[10px] font-black uppercase tracking-[0.22em]">
+                @foreach ($navItems as $name => $item)
+                    @if (! request()->routeIs($name))
+                        <a href="{{ $item['route'] }}" class="text-slate-500 hover:text-cyan-500 dark:text-white/60 dark:hover:text-cyan-300 transition">
+                            {{ $item['label'] }}
+                        </a>
+                    @endif
+                @endforeach
             </div>
 
-            <div class="flex items-center gap-6">
-                <!-- Selector de Tema -->
-                <button onclick="toggleTheme()" class="relative w-12 h-6 bg-white/10 rounded-full flex items-center px-1 border border-white/10">
-                    <div id="toggle-circle" class="w-4 h-4 bg-cosmos-neon rounded-full transition-all duration-500 flex items-center justify-center">
-                        <i id="theme-icon" class="fas fa-moon text-[8px] text-cosmos-950"></i>
+            <button type="button" id="theme-toggle"
+                    class="w-12 h-7 rounded-full bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/10 flex items-center px-1">
+                <span id="theme-dot" class="w-5 h-5 rounded-full bg-cyan-500 transition-transform"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="relative z-10">
+        <section class="min-h-[92vh] flex items-center px-6 pt-28 pb-16">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center">
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.55em] text-cyan-500 mb-5">
+                        {{ $hero->subtitle }}
+                    </p>
+                    <h1 class="font-cinzel text-5xl md:text-7xl xl:text-8xl font-black leading-none tracking-tight">
+                        {{ $hero->title }}
+                    </h1>
+                    <p class="mt-7 text-base md:text-lg leading-8 text-slate-600 dark:text-white/70 max-w-2xl">
+                        {{ $hero->body }}
+                    </p>
+                </div>
+
+                <div class="relative">
+                    <div class="aspect-[4/5] md:aspect-[5/4] rounded-[2rem] overflow-hidden shadow-2xl border border-white/20">
+                        <img src="{{ $hero->image }}" alt="{{ $hero->title }}" class="w-full h-full object-cover">
                     </div>
-                </button>
-            </div>
-        </div>
-    </nav>
-</header>
-
-<!-- HERO -->
-<section class="relative h-[50vh] flex items-center justify-center text-center px-6">
-    <div class="relative z-10">
-        <h1 class="text-5xl md:text-8xl font-cinzel font-black tracking-tighter reveal active">
-            EL <span class="text-gradient italic">OBSERVATORIO</span>
-        </h1>
-        <p class="text-[10px] md:text-xs uppercase tracking-[0.6em] mt-4 opacity-50 reveal active">Exploración e Investigación Científica • UMSA</p>
-    </div>
-</section>
-
-<!-- SECCIÓN DE HISTORIA E INVESTIGACIÓN -->
-<section id="historia" class="py-10 px-6 max-w-7xl mx-auto space-y-24">
-    
-    <!-- Bloque 1: Antecedentes -->
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div class="reveal">
-            <h2 class="text-3xl md:text-4xl font-cinzel font-black mb-6 text-cosmos-neon">Antecedentes <br><span class="text-white italic">Institucionales</span></h2>
-            <div class="glass p-8 rounded-[2.5rem] border-l-2 border-cosmos-primary">
-                <p class="text-sm md:text-base text-white/70 leading-relaxed">
-                    {{ $info->historia ?? 'Aquí se detallará la trayectoria del observatorio desde su fundación bajo la Universidad Mayor de San Andrés.' }}
-                </p>
-            </div>
-        </div>
-
-        <!-- ESPACIO PARA FOTO 1 -->
-        <div class="reveal">
-            <div class="image-slot group">
-                <!-- 
-                     INSTRUCCIONES PARA FOTO:
-                     1. Guarda tu imagen en: public/assets/img/observatorio/
-                     2. Formato recomendado: .jpg o .webp (pesan menos)
-                     3. Tamaño recomendado: 1200x800px
-                     4. Reemplaza el <img> de abajo cuando tengas la foto.
-                -->
-                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1200" alt="Fachada Observatorio">
-                <div class="absolute inset-0 bg-cosmos-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Vista Institucional</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Bloque 2: Investigación (Invertido) -->
-    <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div class="order-2 lg:order-1 reveal">
-            <!-- ESPACIO PARA FOTO 2 -->
-            <div class="image-slot group">
-                <!-- Sugerencia: Foto del Telescopio o equipos de avanzada -->
-                <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=1200" alt="Equipamiento">
-                <div class="absolute inset-0 bg-cosmos-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Tecnología Avanzada</span>
+        <section class="px-6 py-12">
+            <div class="max-w-7xl mx-auto space-y-10">
+                <article class="grid lg:grid-cols-2 gap-8 items-center">
+                    <img src="{{ $history->image }}" alt="{{ $history->title }}" class="w-full aspect-[16/10] object-cover rounded-[2rem] shadow-xl">
+                    <div class="glass rounded-[2rem] p-7 md:p-10">
+                        <p class="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-500 mb-4">{{ $history->subtitle }}</p>
+                        <h2 class="font-cinzel text-3xl md:text-5xl font-black mb-5">{{ $history->title }}</h2>
+                        <p class="text-slate-600 dark:text-white/70 leading-8">{{ $history->body }}</p>
+                    </div>
+                </article>
+
+                <article class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="glass rounded-[2rem] p-7 md:p-10 lg:order-1 order-2">
+                        <p class="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-500 mb-4">{{ $research->subtitle }}</p>
+                        <h2 class="font-cinzel text-3xl md:text-5xl font-black mb-5">{{ $research->title }}</h2>
+                        <p class="text-slate-600 dark:text-white/70 leading-8">{{ $research->body }}</p>
+                    </div>
+                    <img src="{{ $research->image }}" alt="{{ $research->title }}" class="lg:order-2 order-1 w-full aspect-[16/10] object-cover rounded-[2rem] shadow-xl">
+                </article>
+            </div>
+        </section>
+
+        <section class="px-6 py-16">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-[.8fr_1.2fr] gap-8 items-stretch">
+                <div class="glass rounded-[2rem] p-7 md:p-10">
+                    <p class="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-500 mb-4">{{ $location->subtitle }}</p>
+                    <h2 class="font-cinzel text-3xl md:text-5xl font-black mb-5">{{ $location->title }}</h2>
+                    <p class="text-slate-600 dark:text-white/70 leading-8">{{ $location->body }}</p>
+                </div>
+
+                <div class="rounded-[2rem] overflow-hidden shadow-xl border border-slate-200 dark:border-white/10 min-h-[360px]">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.978502391696!2d-68.0673322239634!3d-16.527181084224795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f212217c1815d%3A0x6d9f82607f230f3f!2sObservatorio%20Astron%C3%B3mico%20Max%20Schreier!5e0!3m2!1ses!2sbo!4v1714675000000!5m2!1ses!2sbo"
+                            class="w-full h-full border-0 min-h-[360px]" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
-        </div>
+        </section>
+    </main>
 
-        <div class="order-1 lg:order-2 reveal">
-            <h2 class="text-3xl md:text-4xl font-cinzel font-black mb-6 text-cosmos-neon">Líneas de <br><span class="text-white italic">Investigación</span></h2>
-            <div class="glass p-8 rounded-[2.5rem] border-r-2 border-cosmos-primary text-right">
-                <p class="text-sm md:text-base text-white/70 leading-relaxed">
-                    Investigación científica aplicada en astrofísica, monitoreo solar y estudios atmosféricos realizados por docentes y estudiantes de la UMSA.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+    <footer class="relative z-10 py-10 text-center text-[9px] font-black uppercase tracking-[0.45em] text-slate-400">
+        Observatorio Max Schreier - UMSA
+    </footer>
 
-<!-- UBICACIÓN (MAPA) -->
-<section id="ubicacion" class="py-20 px-6 max-w-7xl mx-auto">
-    <div class="text-center mb-10 reveal">
-        <h2 class="text-2xl font-cinzel font-black tracking-widest uppercase">Ubicación</h2>
-        <p class="text-[10px] opacity-40 mt-2">Cota Cota • Calle 27 • La Paz, Bolivia</p>
-    </div>
-    <div class="h-[400px] rounded-[3rem] overflow-hidden glass p-2 reveal">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3824.978502391696!2d-68.0673322239634!3d-16.527181084224795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x915f212217c1815d%3A0x6d9f82607f230f3f!2sObservatorio%20Astron%C3%B3mico%20Max%20Schreier!5e0!3m2!1ses!2sbo!4v1714675000000!5m2!1ses!2sbo" class="w-full h-full rounded-[2.5rem] grayscale invert-[0.9] hue-rotate-[180deg] border-0" allowfullscreen="" loading="lazy"></iframe>
-    </div>
-</section>
+    <script>
+        const html = document.documentElement;
+        const dot = document.getElementById('theme-dot');
 
-<footer class="py-12 text-center">
-    <p class="text-[8px] font-black uppercase tracking-[0.5em] text-white/20">© 2026 Observatorio Max Schreier • Facultad de Ciencias Puras y Naturales</p>
-</footer>
-
-<script>
-    function initParticles(color) {
-        if(window.pJSDom && window.pJSDom.length > 0) {
-            window.pJSDom[0].pJS.fn.vendors.destroypJS();
-            window.pJSDom = [];
+        function applyPublicTheme(theme) {
+            html.classList.toggle('dark', theme === 'dark');
+            localStorage.setItem('public-theme', theme);
+            if (dot) dot.style.transform = theme === 'dark' ? 'translateX(20px)' : 'translateX(0)';
         }
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 40 },
-                color: { value: color },
-                shape: { type: "circle" },
-                opacity: { value: 0.2 },
-                size: { value: 1.5 },
-                line_linked: { enable: true, distance: 150, color: color, opacity: 0.1, width: 1 },
-                move: { enable: true, speed: 0.5 }
-            },
-            retina_detect: true
+
+        applyPublicTheme(localStorage.getItem('public-theme') || 'dark');
+
+        document.getElementById('theme-toggle')?.addEventListener('click', () => {
+            applyPublicTheme(html.classList.contains('dark') ? 'light' : 'dark');
         });
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        const circle = document.getElementById('toggle-circle');
-        const icon = document.getElementById('theme-icon');
-        body.classList.toggle('dark');
-        body.classList.toggle('light');
-        
-        if (body.classList.contains('dark')) {
-            body.classList.add('bg-cosmos-950', 'text-white');
-            body.classList.remove('bg-slate-50', 'text-slate-900');
-            circle.style.transform = 'translateX(0)';
-            icon.classList.replace('fa-sun', 'fa-moon');
-            initParticles('#3b82f6');
-        } else {
-            body.classList.remove('bg-cosmos-950', 'text-white');
-            body.classList.add('bg-slate-50', 'text-slate-900');
-            circle.style.transform = 'translateX(24px)';
-            icon.classList.replace('fa-moon', 'fa-sun');
-            initParticles('#020617');
-        }
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('active');
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    document.addEventListener('DOMContentLoaded', () => initParticles('#3b82f6'));
-</script>
-
+    </script>
 </body>
 </html>

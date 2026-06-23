@@ -17,9 +17,16 @@ export default {
             colors: {
                 'observatorio-dark': '#0f172a',
                 'observatorio-card': '#1e293b',
+                cosmos: {
+                    950: '#02040a',
+                    primary: '#3b82f6',
+                    neon: '#22d3ee',
+                    violet: '#7c3aed',
+                },
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                cinzel: ['Cinzel', ...defaultTheme.fontFamily.serif],
+                sans: ['Plus Jakarta Sans', 'Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
     },

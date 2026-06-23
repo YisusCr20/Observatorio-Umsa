@@ -52,12 +52,12 @@
                         <i data-lucide="users" class="w-4 h-4"></i>
                         Reservas de Usuarios
                     </a>
-                    <a href="{{ route('secretaria.reportes.pdf') }}"
+                    <a href="{{ route('secretaria.reportes.index') }}"
                         class="flex items-center gap-3 text-blue-100 hover:bg-white/10 px-4 py-3 rounded-xl font-bold text-[10px] uppercase tracking-wide transition-all">
                         <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
                         Reportes
                     </a>
-                    <a href="#"
+                    <a href="{{ route('secretaria.pagos.verificar') }}"
                         class="flex items-center gap-3 text-blue-100 hover:bg-white/10 px-4 py-3 rounded-xl font-bold text-[10px] uppercase tracking-wide transition-all">
                         <i data-lucide="banknote" class="w-4 h-4"></i>
                         Historial de Pagos

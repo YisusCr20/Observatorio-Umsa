@@ -73,8 +73,27 @@
 
             {{-- Título --}}
             <div class="mb-8">
-                <h2 class="text-2xl md:text-3xl font-black text-gray-800 dark:text-white tracking-tight">Mis Reservas</h2>
-                <p class="text-sm text-gray-500 font-bold mt-1">Consulta y edita tus visitas programadas al observatorio.</p>
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-800 dark:text-white tracking-tight">
+                            {{ auth()->user()->isAdmin() || auth()->user()->isSecretaria() ? 'Gestión de Reservas' : 'Mis Reservas' }}
+                        </h2>
+                        <p class="text-sm text-gray-500 font-bold mt-1">Consulta y edita las visitas programadas al observatorio.</p>
+                    </div>
+
+                    @if(auth()->user()->isAdmin())
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <a href="{{ route('admin.dashboard', ['panel' => 'reportes']) }}"
+                               class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest text-center">
+                                Reporte reservas
+                            </a>
+                            <a href="{{ route('admin.dashboard', ['panel' => 'reportes', 'tipo_usuarios' => 'usuario']) }}"
+                               class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-3 text-[10px] font-black uppercase tracking-widest text-center">
+                                Reporte usuarios
+                            </a>
+                        </div>
+                    @endif
+                </div>
             </div>
 
             {{-- Contenedor de la Tabla --}}

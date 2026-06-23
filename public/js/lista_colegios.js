@@ -107,3 +107,5 @@ window.colegiosElAlto = [
     "TECNICO HUMANISTICO EL ALTO"
     // Pega el resto aquí...
 ];
+
+window.dispatchEvent(new Event('colegios-loaded'));

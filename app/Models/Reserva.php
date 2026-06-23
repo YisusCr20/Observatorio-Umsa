@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reserva extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id', // <--- ESTO DEBE ESTAR AQUÍ
@@ -51,6 +52,21 @@ class Reserva extends Model
     {
         // Relación con el bloque (Mañana, Tarde, Noche)
         return $this->belongsTo(Turno::class);
+    }
+
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
+    }
+
+    public function pago()
+    {
+        return $this->hasOne(Pago::class)->latestOfMany();
+    }
+
+    public function feedback()
+    {
+        return $this->hasMany(VisitFeedback::class);
     }
 
     /*

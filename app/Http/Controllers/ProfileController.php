@@ -34,6 +34,10 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        if ($request->boolean('return_to_dashboard')) {
+            return Redirect::route('dashboard', ['panel' => 'perfil'])->with('status', 'profile-updated');
+        }
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 

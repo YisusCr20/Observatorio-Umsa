@@ -8,7 +8,10 @@
         body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; font-size: 11px; line-height: 1.5; }
         
         /* Encabezado Institucional */
-        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; border-bottom: 3px solid #1d4ed8; padding-bottom: 10px; }
+        .header-table td { vertical-align: middle; }
+        .logo-img { width: 68px; height: 68px; object-fit: cover; border-radius: 8px; }
+        .logo-fallback { width: 64px; height: 64px; border: 2px solid #1d4ed8; text-align: center; line-height: 64px; font-weight: bold; color: #1d4ed8; }
         .header-logo { width: 60%; font-size: 15px; font-weight: bold; color: #1e3a8a; text-transform: uppercase; line-height: 1.2; }
         .header-meta { width: 40%; text-align: right; color: #4b5563; font-size: 10px; }
         
@@ -49,9 +52,16 @@
 
     <table class="header-table">
         <tr>
+            <td style="width: 80px;">
+                @if(!empty($logoBase64))
+                    <img src="{{ $logoBase64 }}" class="logo-img" alt="Observatorio Max Schreier">
+                @else
+                    <div class="logo-fallback">MS</div>
+                @endif
+            </td>
             <td class="header-logo">
-                MAX SCHREIER<br>
-                <span style="font-size: 10px; color: #4b5563; font-weight: normal; text-transform: none;">Observatorio Astronómico Online</span>
+                OBSERVATORIO MAX SCHREIER<br>
+                <span style="font-size: 10px; color: #4b5563; font-weight: normal; text-transform: uppercase;">Carrera de Física - Facultad de Ciencias Puras y Naturales - UMSA</span>
             </td>
             <td class="header-meta">
                 <strong>Generado el:</strong> {{ $fechaGeneracion }}<br>

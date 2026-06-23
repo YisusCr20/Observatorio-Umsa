@@ -16,11 +16,11 @@ class UserController extends Controller
         $user = auth()->user();
         
         // 1. Cargamos las reservas del usuario (Necesario para evitar errores en la vista)
-        $misReservas = Reserva::where('user_id', $user->id)->with('turno')->latest()->get();
+        $misReservas = Reserva::where('user_id', $user->id)->with(['turno', 'horario'])->latest()->get();
         $proximasReservas = Reserva::where('user_id', $user->id)
             ->where('estado', 'Confirmado')
             ->where('fecha', '>=', Carbon::now()->toDateString())
-            ->with('turno')->limit(5)->get();
+            ->with(['turno', 'horario'])->limit(5)->get();
 
         // 2. ESTADÍSTICAS: Aquí agregué la clave 'canceladas' que faltaba
         $estadisticas = [
@@ -35,10 +35,17 @@ class UserController extends Controller
         $totalUsuarios = User::count();
         $reservasHoy = Reserva::whereDate('fecha', Carbon::today())->count();
         $turnosDisponibles = Turno::all();
+        $turnos = Turno::with('horarios')->where('activo', true)->get();
+        $reservas = $misReservas;
+        $totalReservas = $estadisticas['total_reservas'];
+        $confirmadas = $estadisticas['confirmadas'];
+        $pendientes = $estadisticas['pendientes'];
+        $canceladas = $estadisticas['canceladas'];
 
         return view('usuario.dashboard', compact(
             'misReservas', 'proximasReservas', 'estadisticas', 
-            'turnosDisponibles', 'usuariosInternos', 'totalUsuarios', 'reservasHoy'
+            'turnosDisponibles', 'usuariosInternos', 'totalUsuarios', 'reservasHoy',
+            'turnos', 'reservas', 'totalReservas', 'confirmadas', 'pendientes', 'canceladas'
         ));
     }
 
@@ -52,18 +59,29 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'role' => 'required',
             'carnet_identidad' => 'required',
+            'telefono' => 'nullable|string|max:20',
         ]);
+
+        $parts = preg_split('/\s+/', trim($request->name), 2);
+        $name = $parts[0] ?? $request->name;
+        $apellido = $parts[1] ?? 'Interno';
 
         // Creamos el usuario con su rol y contraseña genérica (su carnet)
         User::create([
-            'name' => $request->name,
+            'name' => $name,
+            'apellido' => $apellido,
+            'ci' => $request->carnet_identidad,
+            'telefono' => $request->telefono ?? 'No especificado',
             'email' => $request->email,
             'role' => $request->role,
             'password' => Hash::make($request->carnet_identidad), 
             'id_acceso' => $request->carnet_identidad,
+            'departamento' => $request->role === 'admin' ? 'Administración' : 'Secretaría',
         ]);
 
         // Volvemos a la misma página. Ahora la lista se actualizará sola.
-        return redirect()->route('admin.dashboard')->with('success', '¡Usuario creado!');
+        return redirect()
+            ->route('admin.dashboard', ['panel' => 'usuarios'])
+            ->with('success', '¡Usuario creado!');
     }
 }

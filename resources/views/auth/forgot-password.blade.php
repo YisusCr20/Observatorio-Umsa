@@ -1,112 +1,285 @@
 <x-guest-layout>
-    <!-- Tipografías de Prestigio -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Plus+Jakarta+Sans:wght@200;400;600;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <div class="min-h-screen w-full flex items-center justify-center bg-[#020617] p-4 md:p-8 font-['Plus_Jakarta_Sans'] relative overflow-hidden">
+    <style>
+        :root {
+            --bg: #f4f8ff;
+            --surface: #ffffff;
+            --surface-soft: #eef4ff;
+            --border: rgba(15, 23, 42, 0.12);
+            --text: #0f172a;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-soft: rgba(37, 99, 235, 0.12);
+            --accent: #d97706;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --shadow: rgba(15, 23, 42, 0.18);
+        }
 
-        <!-- FONDO DINÁMICO (Mismo que el Login) -->
-        <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-cover bg-center scale-110 animate-slow-zoom"
-                style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2022&auto=format&fit=crop'); filter: brightness(0.3) contrast(1.1);">
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020617_100%)]"></div>
+        [data-theme="dark"] {
+            --bg: #07111f;
+            --surface: #101b2d;
+            --surface-soft: #17243a;
+            --border: rgba(255, 255, 255, 0.10);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-soft: rgba(59, 130, 246, 0.18);
+            --accent: #fbbf24;
+            --success: #22c55e;
+            --danger: #f87171;
+            --shadow: rgba(0, 0, 0, 0.55);
+        }
+
+        * { font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        .auth-bg {
+            background:
+                radial-gradient(circle at 15% 20%, var(--primary-soft), transparent 34%),
+                radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.13), transparent 34%),
+                linear-gradient(135deg, var(--bg) 0%, var(--surface-soft) 50%, var(--bg) 100%);
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.74);
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 100px var(--shadow);
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .auth-card { background: rgba(15, 23, 42, 0.92); }
+
+        .side-panel {
+            background:
+                radial-gradient(circle at top left, var(--primary-soft), transparent 42%),
+                radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.12), transparent 40%),
+                linear-gradient(135deg, rgba(37, 99, 235, 0.22), transparent);
+            border-right: 1px solid var(--border);
+        }
+
+        .input-box {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: all .25s ease;
+        }
+
+        .input-box::placeholder { color: var(--muted); opacity: .72; }
+        .input-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+            outline: none;
+        }
+
+        .muted { color: var(--muted); }
+        .primary-text { color: var(--primary); }
+        .accent-text { color: var(--accent); }
+        .success-text { color: var(--success); }
+        .danger-text { color: var(--danger); }
+
+        .primary-button {
+            background: linear-gradient(135deg, var(--primary), #0ea5e9);
+            color: white;
+            box-shadow: 0 18px 45px var(--primary-soft);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid var(--border);
+            color: var(--text);
+            backdrop-filter: blur(20px);
+        }
+
+        .icon-box {
+            background: var(--primary-soft);
+            border: 1px solid rgba(59, 130, 246, 0.28);
+            color: var(--primary);
+        }
+
+        .status-box {
+            background: rgba(22, 163, 74, 0.10);
+            border: 1px solid rgba(22, 163, 74, 0.28);
+            color: var(--success);
+        }
+
+        .error-box {
+            background: rgba(220, 38, 38, 0.10);
+            border: 1px solid rgba(220, 38, 38, 0.28);
+            color: var(--danger);
+        }
+
+        @media (max-height: 700px) and (min-width: 1024px) {
+            .compact-desktop {
+                padding-top: 1.5rem !important;
+                padding-bottom: 1.5rem !important;
+            }
+        }
+    </style>
+
+    <div class="min-h-[100dvh] auth-bg relative overflow-x-hidden flex items-center justify-center px-3 pt-16 pb-5 sm:px-6 sm:py-6 lg:px-8">
+        <div class="fixed top-4 left-4 z-50">
+            <a href="{{ route('login') }}" class="group flex items-center gap-2 muted hover:opacity-100 opacity-80 transition-all duration-300">
+                <div class="w-10 h-10 rounded-full glass-button flex items-center justify-center group-hover:scale-105 transition">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest hidden sm:block">Volver al login</span>
+            </a>
         </div>
 
-        <!-- CONTENEDOR PRINCIPAL -->
-        <div class="relative z-10 w-full max-w-[1200px] flex flex-col lg:flex-row bg-white/[0.01] backdrop-blur-[50px] border border-white/10 rounded-[30px] md:rounded-[60px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.7)]">
+        <button type="button" onclick="toggleTheme()"
+            class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full glass-button flex items-center justify-center hover:scale-105 transition"
+            title="Cambiar tema">
+            <i id="themeIcon" class="fas fa-moon text-sm primary-text"></i>
+        </button>
 
-            <!-- SECCIÓN IZQUIERDA: FORMULARIO DE RESCATE -->
-            <div class="w-full lg:w-[45%] p-8 sm:p-12 md:p-20 flex flex-col justify-center relative bg-black/20">
+        <div class="absolute top-24 left-8 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-8 w-52 h-52 bg-yellow-400/10 rounded-full blur-3xl"></div>
 
-                <!-- Logo/Marca Adaptada -->
-                <div class="mb-10 group">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="h-[1px] w-8 bg-blue-500 group-hover:w-16 transition-all duration-700"></div>
-                        <span class="font-['Syncopate'] text-[9px] tracking-[0.5em] text-blue-400 font-bold uppercase">Seguridad</span>
-                    </div>
-                    <h1 class="font-['Cinzel'] text-2xl md:text-4xl text-white font-black leading-none tracking-tighter">
-                        RECUPERA<br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">TU CONTRASEÑA</span>
-                    </h1>
-                </div>
-
-                <!-- Mensaje de Instrucción Estilizado -->
-                <div class="mb-8 text-white/50 text-xs leading-relaxed italic tracking-wider">
-                    {{ __('¿Olvidaste tu contraseña? No hay problema. Ingresa tu correo electrónico institucional y te enviaremos un enlace de rescate para restablecer tu acceso.') }}
-                </div>
-
-                <!-- Session Status (Feedback de envío exitoso) -->
-                @if (session('status'))
-                    <div class="mb-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold animate-pulse text-center">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('password.email') }}" class="space-y-8">
-                    @csrf
-
-                    <!-- Campo Email con tu estilo de inputs -->
-                    <div class="space-y-2">
-                        <label class="block text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1 font-bold italic">Correo Electronico</label>
-                        <div class="relative group">
-                            <input id="email" type="email" name="email" :value="old('email')" required autofocus placeholder=""
-                                class="w-full bg-white/[0.03] border-b border-white/10 text-white text-sm px-4 py-4 focus:border-blue-400 transition-all outline-none placeholder:text-white/10 group-hover:bg-white/[0.05]">
-                            <div class="absolute bottom-0 left-0 h-[2px] w-0 bg-blue-400 group-focus-within:w-full transition-all duration-500"></div>
+        <div class="relative z-10 w-full max-w-[430px] sm:max-w-[620px] lg:max-w-6xl 2xl:max-w-7xl auth-card backdrop-blur-3xl rounded-[26px] lg:rounded-[34px] overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-[0.92fr_1.08fr]">
+                <div class="hidden lg:flex flex-col justify-between compact-desktop side-panel p-8 xl:p-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full icon-box text-[10px] font-black uppercase tracking-[0.25em]">
+                            <i class="fas fa-key"></i>
+                            Recuperación segura
                         </div>
-                        <x-input-error :messages="$errors->get('email')" class="mt-2 text-[10px] text-red-400 uppercase tracking-widest font-bold" />
-                    </div>
 
-                    <!-- Botón Principal -->
-                    <button class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-blue-900/40 transition-all duration-500 transform hover:-translate-y-1">
-                        {{ __('Enviar') }}
-                    </button>
+                        <div class="mt-10 xl:mt-14">
+                            <div class="relative w-20 h-20 xl:w-24 xl:h-24 rounded-[28px] icon-box flex items-center justify-center shadow-[0_0_55px_rgba(59,130,246,0.25)]">
+                                <i class="fas fa-unlock-keyhole text-3xl xl:text-4xl"></i>
+                                <div class="absolute -bottom-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center border-4"
+                                     style="background: var(--success); border-color: var(--surface);">
+                                    <i class="fas fa-envelope text-white text-xs"></i>
+                                </div>
+                            </div>
 
-                    <!-- Footer de Navegación -->
-                    <div class="mt-12 pt-8 border-t border-white/5 flex justify-center">
-                        <a href="{{ route('login') }}"
-                            class="text-[10px] px-8 py-2 rounded-full border border-white/10 text-white/40 hover:border-blue-500 hover:text-white transition-all uppercase tracking-[0.2em] font-bold">
-                            Volver
-                        </a>
-                    </div>
-                </form>
-            </div>
+                            <h1 class="mt-7 text-3xl xl:text-4xl font-black uppercase tracking-widest leading-tight">
+                                Recuperar <br> contraseña
+                            </h1>
 
-            <!-- SECCIÓN DERECHA: ICONOGRAFÍA DE SEGURIDAD (Visible en Desktop) -->
-            <div class="hidden lg:flex w-[55%] relative items-center justify-center p-20 overflow-hidden bg-[#050a15]">
-                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2072"
-                    class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-screen">
-
-                <div class="relative z-10 text-center">
-                    <div class="inline-block p-[2px] bg-gradient-to-tr from-blue-500 via-blue-300 to-transparent rounded-full mb-8">
-                        <div class="bg-[#050a15] rounded-full p-6 backdrop-blur-xl">
-                            <!-- Icono de Llave Estelar -->
-                            <svg class="w-12 h-12 text-blue-400 shadow-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                            </svg>
+                            <p class="mt-4 text-sm muted leading-7 max-w-sm">
+                                Te enviaremos un enlace seguro para crear una nueva contraseña de acceso al sistema.
+                            </p>
                         </div>
                     </div>
-                    <h3 class="font-['Cinzel'] text-3xl text-white font-black mb-4 tracking-[0.2em] uppercase">
-                        Protocolo de <br> <span class="italic text-blue-400">Acceso Seguro</span>
-                    </h3>
-                    <p class="text-white/30 text-[9px] tracking-[0.5em] uppercase leading-loose max-w-xs mx-auto font-bold">
-                        El sistema validará su identidad mediante el envío de un token criptográfico a su bandeja institucional.
-                    </p>
+
+                    <div class="grid grid-cols-1 gap-4 mt-8">
+                        <div class="flex items-center gap-3 muted text-xs font-bold">
+                            <div class="w-8 h-8 rounded-xl icon-box flex items-center justify-center">
+                                <i class="fas fa-shield-halved text-[11px]"></i>
+                            </div>
+                            Enlace de recuperación temporal
+                        </div>
+                        <div class="flex items-center gap-3 muted text-xs font-bold">
+                            <div class="w-8 h-8 rounded-xl icon-box flex items-center justify-center">
+                                <i class="fas fa-clock text-[11px]"></i>
+                            </div>
+                            Expira automáticamente por seguridad
+                        </div>
+                        <div class="flex items-center gap-3 muted text-xs font-bold">
+                            <div class="w-8 h-8 rounded-xl icon-box flex items-center justify-center">
+                                <i class="fas fa-moon text-[11px]"></i>
+                            </div>
+                            Tema claro y oscuro adaptable
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Adornos Tecnológicos -->
-                <div class="absolute top-[-100px] left-[-100px] w-80 h-80 border border-blue-500/10 rounded-full animate-pulse"></div>
-                <div class="absolute bottom-[-100px] right-[-100px] w-96 h-96 border border-blue-400/5 rounded-full"></div>
+                <div class="p-5 sm:p-7 lg:p-8 xl:p-10 compact-desktop flex flex-col justify-center">
+                    <div class="lg:hidden text-center mb-6">
+                        <div class="flex justify-center mb-4">
+                            <div class="relative w-16 h-16 rounded-2xl icon-box flex items-center justify-center">
+                                <i class="fas fa-unlock-keyhole text-2xl"></i>
+                            </div>
+                        </div>
+                        <h2 class="font-black text-[24px] uppercase tracking-widest">Recuperar acceso</h2>
+                        <p class="primary-text text-[10px] font-bold uppercase tracking-[0.16em] mt-2 leading-relaxed">
+                            Enlace seguro por correo
+                        </p>
+                    </div>
+
+                    <div class="hidden lg:block mb-7">
+                        <h2 class="font-black text-2xl uppercase tracking-widest">Restablecer contraseña</h2>
+                        <p class="muted text-xs mt-2">Ingresa tu correo registrado para recibir el enlace.</p>
+                    </div>
+
+                    @if (session('status'))
+                        <div class="status-box mb-5 rounded-2xl px-4 py-3 text-xs font-bold flex items-start gap-3">
+                            <i class="fas fa-circle-check mt-0.5"></i>
+                            <span>{{ session('status') }}</span>
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="error-box mb-5 rounded-2xl px-4 py-3 text-xs font-bold space-y-2">
+                            @foreach ($errors->all() as $error)
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-triangle-exclamation mt-0.5"></i>
+                                    <p class="uppercase tracking-[0.08em] leading-relaxed">{{ $error }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+                        @csrf
+
+                        <div>
+                            <label for="email" class="block text-[10px] font-black muted uppercase tracking-widest mb-2">
+                                Correo electrónico
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 primary-text text-xs"></i>
+                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                                    placeholder="ejemplo@correo.com"
+                                    class="input-box w-full rounded-2xl pl-10 pr-4 py-3.5 text-sm font-bold">
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="group relative w-full overflow-hidden primary-button font-black py-4 rounded-2xl transition-all uppercase tracking-[0.18em] sm:tracking-[0.22em] text-[10px] sm:text-xs active:scale-[0.98] hover:scale-[1.01]">
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                Enviar enlace
+                                <i class="fas fa-paper-plane text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </span>
+                        </button>
+
+                        <div class="pt-5 border-t text-center" style="border-color: var(--border);">
+                            <a href="{{ route('login') }}" class="muted hover:primary-text text-[10px] font-bold uppercase tracking-widest transition-all">
+                                Ya recordé mi contraseña
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <style>
-        @keyframes slow-zoom {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
+    <script>
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = theme === 'dark'
+                    ? 'fas fa-sun text-sm accent-text'
+                    : 'fas fa-moon text-sm primary-text';
+            }
         }
-        .animate-slow-zoom { animation: slow-zoom 30s ease-in-out infinite; }
-        .shadow-glow { filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.6)); }
-    </style>
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+        });
+    </script>
 </x-guest-layout>

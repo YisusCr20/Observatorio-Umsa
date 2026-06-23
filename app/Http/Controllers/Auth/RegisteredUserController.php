@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -57,12 +56,8 @@ class RegisteredUserController extends Controller
 
         $user->notify(new WelcomeNotification($user));
 
-        Auth::login($user);
-
-        return match ($user->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'secretaria' => redirect()->route('secretaria.dashboard'),
-            default => redirect()->route('user.dashboard'),
-        };
+        return redirect()
+            ->route('login')
+            ->with('status', 'Cuenta creada correctamente. Ahora inicia sesión.');
     }
 }

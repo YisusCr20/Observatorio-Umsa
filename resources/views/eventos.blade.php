@@ -1,137 +1,147 @@
+@php
+    $eventItems = $eventItems ?? collect();
+
+    $fallbackEvents = [
+        [
+            'title' => 'Alineación de los gigantes',
+            'category' => 'Próximo',
+            'date' => '2026-03-20',
+            'body' => 'Una jornada de observación dedicada al seguimiento de conjunciones planetarias y explicación guiada para visitantes.',
+            'image' => 'https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=1600',
+            'button_label' => 'Agendar visita',
+            'button_url' => route('reservas.create'),
+        ],
+        [
+            'title' => 'Observación de la Tierra',
+            'category' => 'Divulgación',
+            'date' => '2026-04-12',
+            'body' => 'Actividad educativa con material visual y explicación de sensores, órbitas y observación desde el entorno universitario.',
+            'image' => 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1600',
+            'button_label' => null,
+            'button_url' => null,
+        ],
+        [
+            'title' => 'Paso del cometa C-2025',
+            'category' => 'Fenómeno',
+            'date' => '2026-05-05',
+            'body' => 'Seguimiento de cola, núcleo y trayectoria de un cometa visible desde el hemisferio sur.',
+            'image' => 'https://images.unsplash.com/photo-1446941611757-91d2c3bd3d45?q=80&w=1600',
+            'button_label' => null,
+            'button_url' => null,
+        ],
+    ];
+
+    $navItems = [
+        'bienvenido' => ['Inicio', route('bienvenido')],
+        'acerca' => ['Acerca de', route('acerca')],
+        'investigacion' => ['Investigación', route('investigacion')],
+        'galeria' => ['Galería', route('galeria')],
+        'contacto' => ['Contacto', route('contacto')],
+    ];
+@endphp
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Eventos Especiales | Observatorio Max Schreier</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
+    <title>Eventos | Observatorio Max Schreier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #000; color: white; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .glass-event { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .bg-nebula { background-image: radial-gradient(circle at 10% 20%, rgba(0, 163, 255, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255, 0, 200, 0.05) 0%, transparent 40%); }
-        
-        .reveal { opacity: 0; transform: scale(0.95); transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .reveal.active { opacity: 1; transform: scale(1); }
-
-        /* Estilo para las redes sociales flotantes */
-        .social-bar { position: fixed; right: 2rem; top: 50%; transform: translateY(-50%); z-index: 100; }
-        .social-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; margin-bottom: 1rem; transition: 0.3s; color: #fff; }
-        .social-icon:hover { background: #22d3ee; color: #000; transform: scale(1.1); box-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
-    </style>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { cinzel: ['Cinzel'], sans: ['Plus Jakarta Sans'] } } } }
+    </script>
 </head>
-<body class="bg-nebula">
+<body class="bg-slate-50 text-slate-950 dark:bg-[#02040a] dark:text-white font-sans min-h-screen overflow-x-hidden">
+    <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_10%,rgba(14,165,233,.16),transparent_30%),radial-gradient(circle_at_90%_25%,rgba(244,63,94,.12),transparent_28%)] dark:bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,.12),transparent_30%),radial-gradient(circle_at_90%_25%,rgba(59,130,246,.18),transparent_28%)]"></div>
 
-    <aside class="social-bar hidden lg:flex flex-col">
-        <a href="https://facebook.com" target="_blank" class="social-icon" title="Facebook">FB</a>
-        <a href="https://twitter.com" target="_blank" class="social-icon" title="Twitter/X">X</a>
-        <a href="https://tiktok.com" target="_blank" class="social-icon" title="TikTok">TK</a>
-    </aside>
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-4">
+        <nav class="max-w-7xl mx-auto rounded-2xl px-5 py-3 bg-white/80 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-center justify-between shadow-xl">
+            <a href="{{ route('bienvenido') }}">
+                <span class="block font-cinzel font-black text-lg uppercase tracking-widest">Max Schreier</span>
+                <span class="block text-[9px] text-cyan-500 font-black uppercase tracking-[0.35em]">Agenda astronómica</span>
+            </a>
 
-   <nav class="fixed top-0 w-full z-[100] px-12 py-6 flex justify-between items-center bg-black/60 backdrop-blur-xl border-b border-white/5">
-    <div class="flex items-center gap-3">
-        <div class="w-8 h-[2px] bg-cyan-400"></div>
-        <a href="{{ route('bienvenido') }}" class="font-syncopate text-[10px] tracking-[0.4em] font-bold text-white hover:text-cyan-400 transition">
-            MAX SCHREIER
-        </a>
-    </div>
-
-    <div class="flex gap-10 text-[9px] font-black uppercase tracking-[0.3em]">
-        <a href="{{ route('bienvenido') }}" class="{{ request()->routeIs('bienvenido') ? 'text-cyan-400 border-b border-cyan-400' : 'text-white/60 hover:text-white' }} transition pb-1">
-            Inicio
-        </a>
-        <a href="{{ route('acerca') }}" class="{{ request()->routeIs('acerca') ? 'text-cyan-400 border-b border-cyan-400' : 'text-white/60 hover:text-white' }} transition pb-1">
-            Acerca de
-        </a>
-        <a href="{{ route('investigacion') }}" class="{{ request()->routeIs('investigacion') ? 'text-cyan-400 border-b border-cyan-400' : 'text-white/60 hover:text-white' }} transition pb-1">
-            Investigación
-        </a>
-        <a href="{{ route('eventos') }}" class="{{ request()->routeIs('eventos') ? 'text-cyan-400 border-b border-cyan-400' : 'text-white/60 hover:text-white' }} transition pb-1">
-            Eventos
-        </a>
-    </div>
-</nav>
-
-    <main class="max-w-7xl mx-auto px-6 pt-32 pb-20">
-        
-        <header class="text-center mb-24 reveal active">
-            <h1 class="font-syncopate text-5xl md:text-8xl font-black mb-4 uppercase leading-none tracking-tighter">Agenda <br> <span class="text-cyan-400 text-shadow-glow">Astronómica</span></h1>
-            <p class="text-slate-500 uppercase tracking-[0.6em] text-[10px]">Fenómenos captados desde la UMSA - Gestión 2026</p>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            
-            <div class="md:col-span-2 glass-event rounded-[40px] overflow-hidden group reveal">
-                <div class="flex flex-col lg:flex-row">
-                    <div class="lg:w-3/5 h-96 lg:h-auto overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=2074" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000">
-                    </div>
-                    <div class="lg:w-2/5 p-12 flex flex-col justify-center space-y-6">
-                        <div class="flex items-center gap-4">
-                            <span class="bg-red-500 text-white text-[9px] font-black px-4 py-1 rounded-full uppercase animate-pulse">En Vivo / Próximo</span>
-                            <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">20 de Marzo, 2026</span>
-                        </div>
-                        <h2 class="text-4xl font-bold font-syncopate tracking-tight leading-tight">ALINEACIÓN DE <br>LOS GIGANTES</h2>
-                        <p class="text-slate-400 leading-relaxed font-light">
-                            Un evento único para este 2026. Estudiaremos la conjunción de **Venus, Marte y Plutón**. El observatorio habilitará telescopios de alta potencia para el seguimiento de sus órbitas.
-                        </p>
-                        <a href="{{ route('reservas.create') }}" class="bg-white text-black text-[10px] font-black py-4 px-8 rounded-full text-center uppercase tracking-widest hover:bg-cyan-400 transition">Agendar para este evento</a>
-                    </div>
-                </div>
+            <div class="hidden lg:flex items-center gap-7 text-[10px] font-black uppercase tracking-[0.22em]">
+                @foreach ($navItems as $name => [$label, $url])
+                    @if (! request()->routeIs($name))
+                        <a href="{{ $url }}" class="text-slate-500 hover:text-cyan-500 dark:text-white/60 dark:hover:text-cyan-300 transition">{{ $label }}</a>
+                    @endif
+                @endforeach
             </div>
 
-            <div class="glass-event rounded-[40px] p-8 group reveal" style="transition-delay: 200ms">
-               <div class="h-64 rounded-[30px] overflow-hidden mb-8">
-    <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=2070"
-         class="w-full h-full object-cover group-hover:scale-110 transition duration-700 opacity-70 group-hover:opacity-100 brightness-110 contrast-125">
-</div>
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-2xl font-bold font-syncopate uppercase tracking-tighter">Obervar la Tierra<br>2026</h3>
-                    <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest">Abril 12</span>
-                </div>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    Captura directa de la Tierra. El administrador posteará aquí las fotos exclusivas captadas por los sensores del Max Schreier.
-                </p>
-            </div>
+            <button id="theme-toggle" class="w-12 h-7 rounded-full bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/10 flex items-center px-1">
+                <span id="theme-dot" class="w-5 h-5 rounded-full bg-cyan-500 transition-transform"></span>
+            </button>
+        </nav>
+    </header>
 
-            <div class="glass-event rounded-[40px] p-8 group reveal" style="transition-delay: 400ms">
-                <div class="h-64 rounded-[30px] overflow-hidden mb-8">
-                    <img src="https://images.unsplash.com/photo-1446941611757-91d2c3bd3d45?q=80&w=2004" class="w-full h-full object-cover group-hover:scale-110 transition duration-700 opacity-60 group-hover:opacity-100">
-                </div>
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-2xl font-bold font-syncopate uppercase tracking-tighter">Paso del <br>Cometa C-2025</h3>
-                    <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest">Mayo 05</span>
-                </div>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    Seguimiento de cola y núcleo. Datos técnicos de la trayectoria del cometa cruzando el hemisferio sur.
-                </p>
-            </div>
-        </div>
-
-        <section class="mt-32 p-12 glass-event rounded-[40px] text-center lg:hidden">
-            <h4 class="font-syncopate text-xl mb-8">Síguenos en Redes</h4>
-            <div class="flex justify-center gap-6">
-                <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center font-bold">FB</a>
-                <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center font-bold">X</a>
-                <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center font-bold">TK</a>
-            </div>
+    <main class="relative z-10 px-6 pt-36 pb-20">
+        <section class="max-w-7xl mx-auto mb-12">
+            <p class="text-[10px] font-black uppercase tracking-[0.55em] text-cyan-500 mb-5">Actividades y fenómenos</p>
+            <h1 class="font-cinzel text-5xl md:text-7xl font-black">Eventos astronómicos</h1>
+            <p class="mt-5 max-w-2xl text-slate-600 dark:text-white/70 leading-8">
+                Publicaciones actualizadas desde administración para mostrar actividades, fechas importantes y convocatorias.
+            </p>
         </section>
 
+        <section class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+            @forelse ($eventItems as $item)
+                <article class="{{ $loop->first ? 'lg:col-span-2 lg:grid-cols-[1.15fr_.85fr]' : '' }} grid grid-cols-1 rounded-[2rem] overflow-hidden bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/10 shadow-xl">
+                    <div class="aspect-[16/10] {{ $loop->first ? 'lg:aspect-auto' : '' }} overflow-hidden">
+                        <img src="{{ $item->image_path ? asset('storage/' . $item->image_path) : 'https://images.unsplash.com/photo-1543722530-d2c3201371e7?q=80&w=1600' }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-7 md:p-10 flex flex-col justify-center">
+                        <div class="flex flex-wrap items-center gap-3 mb-5">
+                            @if ($item->category)
+                                <span class="bg-cyan-500 text-slate-950 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{{ $item->category }}</span>
+                            @endif
+                            @if ($item->event_date)
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-white/50">{{ $item->event_date->format('d/m/Y') }}</span>
+                            @endif
+                        </div>
+                        <h2 class="font-cinzel text-3xl md:text-5xl font-black leading-tight">{{ $item->title }}</h2>
+                        <p class="mt-5 text-slate-600 dark:text-white/70 leading-8">{{ $item->body }}</p>
+                        @if ($item->button_label && $item->button_url)
+                            <a href="{{ $item->button_url }}" class="mt-7 inline-flex w-fit bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-2xl px-6 py-3 text-xs font-black uppercase tracking-widest">
+                                {{ $item->button_label }}
+                            </a>
+                        @endif
+                    </div>
+                </article>
+            @empty
+                @foreach ($fallbackEvents as $item)
+                    <article class="{{ $loop->first ? 'lg:col-span-2 lg:grid-cols-[1.15fr_.85fr]' : '' }} grid grid-cols-1 rounded-[2rem] overflow-hidden bg-white dark:bg-white/[.04] border border-slate-200 dark:border-white/10 shadow-xl">
+                        <div class="aspect-[16/10] overflow-hidden">
+                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-7 md:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-5">
+                                <span class="bg-cyan-500 text-slate-950 text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{{ $item['category'] }}</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-white/50">{{ \Carbon\Carbon::parse($item['date'])->format('d/m/Y') }}</span>
+                            </div>
+                            <h2 class="font-cinzel text-3xl md:text-5xl font-black leading-tight">{{ $item['title'] }}</h2>
+                            <p class="mt-5 text-slate-600 dark:text-white/70 leading-8">{{ $item['body'] }}</p>
+                            @if ($item['button_label'] && $item['button_url'])
+                                <a href="{{ $item['button_url'] }}" class="mt-7 inline-flex w-fit bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-2xl px-6 py-3 text-xs font-black uppercase tracking-widest">{{ $item['button_label'] }}</a>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
+            @endforelse
+        </section>
     </main>
 
-    <footer class="py-12 border-t border-white/5 text-center">
-        <p class="text-[9px] font-bold text-slate-700 tracking-[0.5em] uppercase">Gestión de Eventos Astrónomicos • UMSA 2026</p>
-    </footer>
-
     <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const html = document.documentElement;
+        const dot = document.getElementById('theme-dot');
+        function applyPublicTheme(theme) {
+            html.classList.toggle('dark', theme === 'dark');
+            localStorage.setItem('public-theme', theme);
+            if (dot) dot.style.transform = theme === 'dark' ? 'translateX(20px)' : 'translateX(0)';
+        }
+        applyPublicTheme(localStorage.getItem('public-theme') || 'dark');
+        document.getElementById('theme-toggle')?.addEventListener('click', () => applyPublicTheme(html.classList.contains('dark') ? 'light' : 'dark'));
     </script>
 </body>
 </html>

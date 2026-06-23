@@ -28,6 +28,16 @@ public function store(LoginRequest $request): RedirectResponse
     // Ejecuta la lógica del LoginRequest (incluye el bloqueo de 3 intentos)
     $request->authenticate();
 
+    if (Auth::user()->is_blacklisted ?? false) {
+        Auth::guard('web')->logout();
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors([
+                'email' => 'Tu cuenta se encuentra en lista negra. Comunícate con administración para revisar tu acceso.',
+            ]);
+    }
+
     $request->session()->regenerate();
 
     // Redirección según rol (Asegúrate de que tus roles sean 'admin', 'secretaria', 'usuario')
